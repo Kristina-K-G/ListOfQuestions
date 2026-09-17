@@ -1,0 +1,42 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 392px;
+  padding: 24px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  gap: 24px;
+}
+
+.filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 68px;
+  border: 1px solid #E8E8E8;
+  padding: 12px 24px;
+}
+
+.searchWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.filter:focus-within {
+  border-color: #5509cc;
+}
+
+
+
+
+
