@@ -1,0 +1,71 @@
+.specializations {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.headerSpecializations {
+  margin: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 120%;
+  color: #474747;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 42px;
+  padding: 6px 12px;
+  border: 1px solid #bababa;
+  border-radius: 12px;
+  background-color: #ffffff;
+  font-family: Manrope, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 120%;
+  color: #303030;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.chip:hover {
+  border-color: #5509cc;
+  background-color: #5509cc;
+  color: #ffffff;
+}
+
+.chipActive {
+  border-color: #5509cc;
+}
+
+.seeAll {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: Manrope, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  color: #5509cc;
+
+  cursor: pointer;
+}
+
+.seeAll:hover {
+  text-decoration: underline;
+}

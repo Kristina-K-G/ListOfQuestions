@@ -1,0 +1,10 @@
+.page {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 1440px;
+  margin: 0 auto;
+  padding: 0 112px;
+  gap: 20px;
+   
+}

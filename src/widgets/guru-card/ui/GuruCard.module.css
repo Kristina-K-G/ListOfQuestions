@@ -1,0 +1,105 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 392px;
+  padding: 24px;
+  gap: 16px;
+  border: 1px solid #6a0bff;
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+.profile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+}
+
+.avatar {
+  display: block;
+  width: 45px;
+  height: 45px;
+  border: 1px solid #6a0bff;
+  border-radius: 50%;
+  object-fit: cover;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 110%;
+  letter-spacing: 0;
+  color: #191919;
+}
+
+.verified {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.role {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0;
+  color: #303030;
+}
+
+.description {
+  margin: 0;
+  width: 100%;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0;
+  color: #303030;
+}
+
+.socials {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.socialLink {
+  display: flex;
+  width: 24px;
+  height: 24px;
+}
+
+.socialLink img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
