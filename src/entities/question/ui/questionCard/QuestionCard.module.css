@@ -120,6 +120,11 @@
 
 .description {
   margin: 0;
+  font-family: Manrope, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 130%;
+  color: #474747;
 }
 
 .moreLink {
@@ -129,4 +134,128 @@
   line-height: 120%;
   color: #6a0bff;
   text-decoration: none;
+}
+
+/* ===== tablet (макет 768) ===== */
+@media (max-width: 1023px) {
+  .card,
+  .cardOpen {
+    width: 100%;
+    max-width: 676px;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px 0 rgba(106, 99, 118, 0.1);
+  }
+
+  .cardOpen {
+    gap: 24px;
+  }
+
+  .meta {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    gap: 10px;
+  }
+
+  .codeBlock {
+    width: 100%;
+    max-width: 628px;
+    height: auto;
+    min-height: 200px;
+  }
+}
+
+/* ===== mobile (макет 360) ===== */
+@media (max-width: 767px) {
+  .card,
+  .cardOpen {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px 0 rgba(106, 99, 118, 0.1);
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .cardOpen {
+    padding: 20px 10px;
+    gap: 16px;
+  }
+
+  .title {
+    font-size: 16px;
+    line-height: 130%;
+  }
+
+  .chevronWrap {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chevron {
+    width: 24px;
+    height: 24px;
+  }
+
+  .body {
+    gap: 16px;
+  }
+
+  .meta {
+    gap: 16px;
+  }
+
+  .badge {
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+  }
+
+  .badge > span:first-child {
+    font-family: Manrope, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 120%;
+    color: #303030;
+  }
+
+  .badgeValue {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 120%;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background-color: #6a0bff;
+  }
+
+  .codeBlock {
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    min-height: 0;
+    border-radius: 16px;
+  }
+
+  .description {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 130%;
+    color: #474747;
+  }
+
+  .moreLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 110%;
+    color: #6a0bff;
+  }
 }

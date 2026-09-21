@@ -18,7 +18,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
-  width: 312px;
+  width: 288px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -43,4 +43,24 @@
 
 .chipActive {
   border-color: #5509cc;
+}
+
+/* mobile */
+@media (max-width: 767px) {
+  .list {
+    width: 100%;
+    max-width: 296px;
+  }
+
+  .chip {
+    width: 39px;
+    height: 39px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .chipActive {
+    border-color: #6a0bff;
+    color: #6a0bff;
+  }
 }

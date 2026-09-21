@@ -1,16 +1,19 @@
-import type { ReactNode } from 'react'  // ReactNode — всё, что React умеет рендерить: элементы, строки, массив…
+import type { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { FilterMenuProvider } from "../../shared/lib/filterMenuContext";
 import { store } from "../store/store";
 
 export type ProvidersProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export function Providers({ children }: ProvidersProps) {
   return (
     <Provider store={store}>
-      <BrowserRouter>{children}</BrowserRouter>
+      <BrowserRouter>
+        <FilterMenuProvider>{children}</FilterMenuProvider>
+      </BrowserRouter>
     </Provider>
   );
 }

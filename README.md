@@ -1,16 +1,66 @@
-# React + Vite
+# База вопросов (List of Questions)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Фронтенд-приложение со списком вопросов для подготовки к собеседованиям: фильтры, поиск, пагинация и страница отдельного вопроса.
 
-Currently, two official plugins are available:
+Демо: https://list-of-questions-chi.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Репозиторий: https://github.com/Kristina-K-G/ListOfQuestions
 
-## React Compiler
+## Стек
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React + TypeScript + Vite
+- Redux Toolkit / RTK Query
+- React Router
+- Feature-Sliced Design (FSD)
+- API: https://api.yeatwork.ru
 
-## Expanding the ESLint configuration
+## Возможности
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Список вопросов с пагинацией
+- Фильтры: специализация, навыки, сложность, рейтинг
+- Поиск по названию
+- Страница вопроса с навигацией «предыдущий / следующий»
+- Сохранение фильтров в URL
+
+## CORS и прокси
+
+Браузер блокирует прямые запросы с домена Vercel (и иногда в других окружениях) к `https://api.yeatwork.ru` из‑за CORS.
+
+Чтобы это обойти, настроены прокси:
+
+- **локально** — proxy в `vite.config.ts` (запросы на `/api` уходят на API)
+- **на Vercel** — rewrite в `vercel.json` (то же самое на продакшене)
+
+В коде `baseUrl` указывает на `/api`, а не напрямую на `api.yeatwork.ru`. Браузер видит запрос «на свой же сайт», CORS не ругается.
+
+## Запуск локально
+
+Нужны Node.js и npm.
+
+```bash
+npm install
+npm run dev
+```
+
+Приложение откроется на http://localhost:3000
+
+### Другие команды
+
+```bash
+npm run build    # сборка в папку dist
+npm run preview  # просмотр собранной версии
+npm run lint     # проверка ESLint
+```
+
+## Структура `src`
+
+- `app` — провайдеры, роутер, store
+- `pages` — страницы (список вопросов, вопрос)
+- `widgets` — хедер, сайдбар, список, карточка гуру
+- `features` — фильтры
+- `entities` — вопрос, навык, специализация
+- `shared` — API, конфиг, утилиты, общие типы
+
+## Деплой
+
+Проект задеплоен на Vercel. После пуша в GitHub Vercel автоматически пересобирает сайт.
