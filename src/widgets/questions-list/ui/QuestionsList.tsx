@@ -1,6 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import { useGetPublicQuestionsQuery } from "../../../entities/question/api/questionApi";
 import { QuestionCard } from "../../../entities/question/ui/questionCard/QuestionCard";
+import { useFilterMenu } from "../../../shared/lib/filterMenuContext";
+import { FilterIcon } from "../../../shared/ui/icons";
 import { Pagination } from "./Pagination";
 import styles from "./QuestionsList.module.css";
 
@@ -16,6 +18,7 @@ function parseIds(value: string | null): number[] {
 
 export function QuestionsList() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { open } = useFilterMenu();
   const pageFromUrl = Number(searchParams.get("page")) || 1;
   const specializationId =
     Number(searchParams.get("specialization")) || undefined;
@@ -58,7 +61,17 @@ export function QuestionsList() {
 
   return (
     <section className={styles.list}>
-      <h1 className={styles.title}>Вопросы React, JavaScript</h1>
+      <div className={styles.titleRow}>
+        <h1 className={styles.title}>Вопросы React, JavaScript</h1>
+        <button
+          type="button"
+          className={styles.filterButton}
+          aria-label="Открыть фильтры"
+          onClick={open}
+        >
+          <FilterIcon />
+        </button>
+      </div>
       <div className={styles.questions}>
         {questions.map((question) => (
           <QuestionCard key={question.id} question={question} />

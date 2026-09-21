@@ -62,10 +62,13 @@
   font-size: 14px;
   line-height: 100%;
   color: #5509cc;
-
+  text-decoration: underline;
   cursor: pointer;
 }
 
-.seeAll:hover {
-  text-decoration: underline;
+/* ===== mobile (макет 360) ===== */
+@media (max-width: 767px) {
+  .seeAll {
+    color: #6a0bff;
+  }
 }

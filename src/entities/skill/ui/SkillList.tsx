@@ -15,7 +15,11 @@ function parseIds(value: string | null): number[] {
     .filter((id) => !Number.isNaN(id))
 }
 
-export function SkillList() {
+type SkillListProps = {
+  title?: string
+}
+
+export function SkillList({ title = 'Навыки' }: SkillListProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -71,7 +75,7 @@ export function SkillList() {
 
   return (
     <div className={styles.skills}>
-      <h3 className={styles.headerSkills}>Навыки</h3>
+      <h3 className={styles.headerSkills}>{title}</h3>
 
       {(isLoading || isAllLoading) && <p>Загрузка...</p>}
       {isError && <p>Не удалось загрузить</p>}

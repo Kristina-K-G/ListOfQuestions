@@ -44,3 +44,16 @@
 .chipActive {
   border-color: #5509cc;
 }
+
+/* mobile */
+@media (max-width: 767px) {
+  .list {
+    width: 100%;
+    max-width: 296px;
+  }
+
+  .chipActive {
+    border-color: #6a0bff;
+    color: #6a0bff;
+  }
+}

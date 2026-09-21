@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import {
   useGetPublicQuestionsByIdQuery,
   useGetPublicQuestionsQuery,
 } from '../../../entities/question/api/questionApi'
 import { getAdjacentQuestions } from '../../../shared/lib/getAdjacentQuestions'
+import { useFilterMenu } from '../../../shared/lib/filterMenuContext'
+import { BackIcon, NextIcon, PrevIcon } from '../../../shared/ui/icons'
 import { GuruCard } from '../../../widgets/guru-card/ui/GuruCard'
-import skillsIcon from '../../../assets/SkillsIcon.png'
+import { QuestionMeta } from './QuestionMeta'
 import styles from './Question.module.css'
 
 const LIMIT = 10
@@ -19,51 +21,12 @@ function parseIds(value: string | null): number[] {
     .filter((id) => !Number.isNaN(id))
 }
 
-function ArrowLeftIcon() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M14.5 6.5L9 12L14.5 17.5"
-        stroke="#5E5E5E"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function ArrowRightIcon() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M9.5 6.5L15 12L9.5 17.5"
-        stroke="#5E5E5E"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
 function Question() {
   const { id } = useParams()
   const [searchParams] = useSearchParams()
   const search = searchParams.toString()
   const listPath = search ? `/?${search}` : '/'
+  const { isOpen, close } = useFilterMenu()
 
   const pageFromUrl = Number(searchParams.get('page')) || 1
   const specializationId =
@@ -77,7 +40,7 @@ function Question() {
     skip: !id,
   })
 
-  const { data: listData } = useGetPublicQuestionsQuery({
+  const listParams = {
     page: pageFromUrl,
     limit: LIMIT,
     specializationId,
@@ -85,14 +48,65 @@ function Question() {
     complexity,
     rate,
     title,
-  })
+  }
+
+  const { data: listData } = useGetPublicQuestionsQuery(listParams)
+
+  const questions = listData?.data ?? []
+  const { prev, next } = getAdjacentQuestions(questions, id)
+
+  const isFirstOnPage =
+    questions.length > 0 && String(questions[0].id) === String(id)
+  const isLastOnPage =
+    questions.length > 0 &&
+    String(questions[questions.length - 1].id) === String(id)
+  const total = listData?.total ?? 0
+  const hasPrevPage = pageFromUrl > 1
+  const hasNextPage = pageFromUrl * LIMIT < total
+
+  const { data: prevPageData } = useGetPublicQuestionsQuery(
+    { ...listParams, page: pageFromUrl - 1 },
+    { skip: !isFirstOnPage || !hasPrevPage || Boolean(prev) },
+  )
+
+  const { data: nextPageData } = useGetPublicQuestionsQuery(
+    { ...listParams, page: pageFromUrl + 1 },
+    { skip: !isLastOnPage || !hasNextPage || Boolean(next) },
+  )
+
+  const prevFromPage =
+    prev ??
+    (prevPageData?.data?.length
+      ? prevPageData.data[prevPageData.data.length - 1]
+      : null)
+  const nextFromPage =
+    next ?? (nextPageData?.data?.length ? nextPageData.data[0] : null)
 
   const [isLongExpanded, setIsLongExpanded] = useState(false)
 
-  const { prev, next } = getAdjacentQuestions(listData?.data ?? [], id)
+  const buildQuestionPath = (
+    questionId: string | number,
+    search: string,
+    page?: number,
+  ): string => {
+    const params = new URLSearchParams(search)
+    if (page != null) {
+      params.set('page', String(page))
+    }
+    const query = params.toString()
+    return query ? `/questions/${questionId}?${query}` : `/questions/${questionId}`
+  }
 
-  const buildQuestionPath = (questionId: string | number, search: string): string =>
-    search ? `/questions/${questionId}?${search}` : `/questions/${questionId}`
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') close()
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, close])
 
   if (isLoading) {
     return <p>Идет загрузка...</p>
@@ -106,10 +120,33 @@ function Question() {
   const keywords = data.keywords ?? []
   const authorName = data.createdBy?.username
 
+  const metaProps = {
+    complexity: data.complexity,
+    rate: data.rate,
+    skills: skillsList,
+    keywords,
+    authorName,
+  }
+
   return (
     <main className={styles.page}>
+      {isOpen ? (
+        <>
+          <button
+            type="button"
+            className={styles.metaBackdrop}
+            aria-label="Закрыть меню"
+            onClick={close}
+          />
+          <div className={styles.metaPanel} role="dialog" aria-label="Информация о вопросе">
+            <QuestionMeta {...metaProps} variant="drawer" onClose={close} />
+          </div>
+        </>
+      ) : null}
+
       <Link to={listPath} className={styles.back}>
-        ← Назад
+        <BackIcon />
+        Назад
       </Link>
 
       <div className={styles.columns}>
@@ -132,34 +169,48 @@ function Question() {
 
           <nav className={styles.navBlock} aria-label="Навигация по вопросам">
             <div className={styles.navRow}>
-              {prev ? (
-                <Link to={buildQuestionPath(prev.id, search)} className={styles.navBtn}>
+              {prevFromPage ? (
+                <Link
+                  to={buildQuestionPath(
+                    prevFromPage.id,
+                    search,
+                    !prev && prevFromPage ? pageFromUrl - 1 : undefined,
+                  )}
+                  className={styles.navBtn}
+                >
                   <span className={styles.navIcon} aria-hidden="true">
-                    <ArrowLeftIcon />
+                    <PrevIcon />
                   </span>
                   <span className={styles.navLabel}>Предыдущий</span>
                 </Link>
               ) : (
                 <button type="button" className={styles.navBtn} disabled>
                   <span className={styles.navIcon} aria-hidden="true">
-                    <ArrowLeftIcon />
+                    <PrevIcon />
                   </span>
                   <span className={styles.navLabel}>Предыдущий</span>
                 </button>
               )}
 
-              {next ? (
-                <Link to={buildQuestionPath(next.id, search)} className={styles.navBtn}>
+              {nextFromPage ? (
+                <Link
+                  to={buildQuestionPath(
+                    nextFromPage.id,
+                    search,
+                    !next && nextFromPage ? pageFromUrl + 1 : undefined,
+                  )}
+                  className={styles.navBtn}
+                >
                   <span className={styles.navLabel}>Следующий</span>
                   <span className={styles.navIcon} aria-hidden="true">
-                    <ArrowRightIcon />
+                    <NextIcon />
                   </span>
                 </Link>
               ) : (
                 <button type="button" className={styles.navBtn} disabled>
                   <span className={styles.navLabel}>Следующий</span>
                   <span className={styles.navIcon} aria-hidden="true">
-                    <ArrowRightIcon />
+                    <NextIcon />
                   </span>
                 </button>
               )}
@@ -205,71 +256,7 @@ function Question() {
         </div>
 
         <aside className={styles.aside}>
-          <div className={styles.metaCard}>
-            <div className={styles.metaBlock}>
-              <h3 className={styles.metaLabel}>Уровень:</h3>
-              <div className={styles.levelRow}>
-                <div className={styles.statCard}>
-                  <div className={styles.statInner}>
-                    <span className={styles.statName}>Сложность:</span>
-                    <span className={styles.badge}>{data.complexity}</span>
-                  </div>
-                </div>
-                <div className={styles.statCard}>
-                  <div className={styles.statInner}>
-                    <span className={styles.statName}>Рейтинг:</span>
-                    <span className={styles.badge}>{data.rate}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {skillsList.length > 0 ? (
-              <div className={styles.metaBlock}>
-                <h3 className={styles.metaLabel}>Навыки:</h3>
-                <ul className={styles.skills}>
-                  {skillsList.map((skill) => (
-                    <li key={skill.id}>
-                      <div className={styles.skillChip}>
-                        <img
-                          className={styles.skillIcon}
-                          src={skill.imageSrc || skillsIcon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          onError={(event) => {
-                            event.currentTarget.src = skillsIcon
-                          }}
-                        />
-                        <span className={styles.skillTitle}>{skill.title}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {keywords.length > 0 ? (
-              <div className={styles.metaBlock}>
-                <h3 className={styles.metaLabel}>Ключевые слова:</h3>
-                <ul className={styles.keywords}>
-                  {keywords.map((keyword) => (
-                    <li key={keyword} className={styles.keyword}>
-                      #{keyword}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {authorName ? (
-              <p className={styles.author}>
-                Автор:{' '}
-                <span className={styles.authorName}>{authorName}</span>
-              </p>
-            ) : null}
-          </div>
-
+          <QuestionMeta {...metaProps} />
           <GuruCard />
         </aside>
       </div>
